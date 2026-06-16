@@ -1,29 +1,43 @@
-let allStudents = [];
+let students = [];
 
-function filterStudents(students, keyword) {
-  return students.filter(s =>
-    s.name.toLowerCase().includes(keyword.toLowerCase())
-  );
-}
-
+// load data API
 async function loadStudents() {
-  const response = await fetch("https://jsonplaceholder.typicode.com/users");
-  allStudents = await response.json();
-  return allStudents;
+    try {
+        const response = await fetch("https://jsonplaceholder.typicode.com/users");
+        students = await response.json();
+        displayStudents(students);
+    } catch (error) {
+        console.error("Error load data:", error);
+    }
 }
 
+// display table
 function displayStudents(data) {
-  return data.map(s => ({
-    id: s.id,
-    name: s.name,
-    email: s.email
-  }));
+    const table = document.getElementById("studentTable");
+    table.innerHTML = "";
+
+    data.forEach(student => {
+        table.innerHTML += `
+            <tr>
+                <td>${student.id}</td>
+                <td>${student.name}</td>
+                <td>${student.email}</td>
+                <td>${student.phone}</td>
+            </tr>
+        `;
+    });
 }
 
-function searchStudent(keyword) {
-  return filterStudents(allStudents, keyword);
+// search function
+function searchStudent() {
+    const keyword = document.getElementById("searchInput").value.toLowerCase();
+
+    const filtered = students.filter(student =>
+        student.name.toLowerCase().includes(keyword)
+    );
+
+    displayStudents(filtered);
 }
 
+// auto load bila page buka
 window.onload = loadStudents;
-
-export { loadStudents, filterStudents, searchStudent, displayStudents };
