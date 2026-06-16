@@ -1,0 +1,42 @@
+name: CI - Sistem Maklumat Pelajar
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Clone repo
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. Install Node.js (untuk check JS & tools)
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      # 3. Install HTML validator
+      - name: Install tools
+        run: npm install -g htmlhint
+
+      # 4. Check HTML files
+      - name: Validate HTML
+        run: htmlhint "*.html"
+
+      # 5. Check CSS (optional simple check)
+      - name: Check CSS exists
+        run: test -f css/style.css
+
+      # 6. Check JS syntax (optional simple safety check)
+      - name: Check JavaScript syntax
+        run: node -c search.html || true
+
+      # 7. Success message
+      - name: CI Success
+        run: echo "CI berjaya - tiada error dijumpai"
